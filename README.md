@@ -2,7 +2,18 @@
 
 A lightweight **Razor Pages + MVC** hybrid app for tracking personal expenses. Built with **.NET 9**, using **EF Core**, **SQL Server**, and a clean service-layer architecture. Includes basic analytics via **Chart.js**.
 
-## 🚀 Features
+## Latest Update
+
+Recent refactoring introduced a stronger separation between data and UI models, modernized syntax, and cleaned up startup/configuration flow:
+
+* Added **ViewModel layer** with `ExpenseViewModel`, `ExpenseInputModel`, and `ChartDataDto` to decouple EF entities from views
+* Reworked `IExpensesService` to expose **typed, fully async** methods
+* Updated `ExpensesService` to use **primary constructor** + EF Core `Select` projections
+* Simplified `ExpensesController` with **primary constructor** and **file-scoped namespace**
+* Migrated `Program.cs` to **top-level statements** and removed redundant comments
+* Updated views to use ViewModel `@model` directives and improved attribute/JavaScript formatting
+
+## Features
 
 * Add, list, and manage expenses
 * Category-based aggregation + charts
@@ -10,14 +21,14 @@ A lightweight **Razor Pages + MVC** hybrid app for tracking personal expenses. B
 * Service layer using `IExpensesService` / `ExpensesService`
 * Works in Visual Studio 2022 or via the `dotnet` CLI
 
-## 🛠 Requirements
+## Requirements
 
 * .NET 9 SDK
 * Visual Studio 2022 (recommended)
 * SQL Server (LocalDB or remote)
 * Optional: `dotnet-ef` CLI tools
 
-## ⚙️ Configuration
+## Configuration
 
 Set your connection string in `appsettings.json`:
 
@@ -27,7 +38,7 @@ Set your connection string in `appsettings.json`:
 }
 ```
 
-## 📦 Quick Start (CLI)
+## Quick Start (CLI)
 
 1. **Restore & build**
 
@@ -47,7 +58,7 @@ Set your connection string in `appsettings.json`:
    ```
 4. Open the URL shown in console (usually `https://localhost:5001`).
 
-## 🖥 Quick Start (Visual Studio)
+## Quick Start (Visual Studio)
 
 1. Open the solution in Visual Studio 2022
 2. Add your connection string in `appsettings.json`
@@ -58,7 +69,7 @@ Set your connection string in `appsettings.json`:
    Update-Database
    ```
 
-## 🔧 Important Startup Note
+## Important Startup Note
 
 Make sure all services are registered **before** calling `builder.Build()`:
 
@@ -69,25 +80,25 @@ Make sure all services are registered **before** calling `builder.Build()`:
 
 Calling `Build()` early makes the service collection read-only and causes startup errors.
 
-## 📂 Project Structure
+## Project Structure
 
 * **Program.cs** — DI setup + middleware
 * **FinanceApp/Data** — EF Core models, DbContext
 * **FinanceApp/Data/Service** — service interfaces + implementations
 * **Views/Expenses/Index.cshtml** — expense table & Chart.js rendering
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 * **Database errors** → verify connection string + run migrations
 * **Chart not showing** → check `/Expenses/GetChart` returns JSON
 * **Read-only services issue** → ensure no early `builder.Build()` calls
 
-## 🤝 Contributing
+## Contributing
 
 Follow `CONTRIBUTING.md` and repo `.editorconfig`.
 Keep DI and service configuration in `Program.cs`.
 
-## 📄 License
+## License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 

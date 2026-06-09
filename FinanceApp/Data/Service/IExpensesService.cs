@@ -1,12 +1,10 @@
-﻿using FinanceApp.Models;
+﻿using FinanceApp.ViewModels;
 
-namespace FinanceApp.Data.Service
+namespace FinanceApp.Data.Service;
+
+public interface IExpensesService
 {
-    public interface IExpensesService
-    {
-        Task<IEnumerable<Expense>> GetAll();
-
-        Task Add(Expense expense);
-        IQueryable GetChartData();
-    }
+    Task<IEnumerable<ExpenseViewModel>> GetAllAsync();
+    Task AddAsync(ExpenseInputModel input);
+    Task<IEnumerable<ChartDataDto>> GetChartDataAsync();
 }

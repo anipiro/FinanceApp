@@ -1,44 +1,32 @@
-﻿ using FinanceApp.Data;
- using FinanceApp.Data.Service;
- using FinanceApp.Models;
+﻿ using FinanceApp.Data.Service;
+ using FinanceApp.ViewModels;
  using Microsoft.AspNetCore.Mvc;
- using Microsoft.EntityFrameworkCore;
 
- namespace FinanceApp.Controllers
-{
-    public class ExpensesController : Controller
-    {
-        private readonly IExpensesService _expensesService;
+ namespace FinanceApp.Controllers;
 
-        public ExpensesController(IExpensesService expensesService)
-        {
-            _expensesService = expensesService;
-        }
-        public async Task<IActionResult> Index()
-        {
-            var expenses = await _expensesService.GetAll();
-            return View(expenses);
-        }
+ public class ExpensesController(IExpensesService expensesService) : Controller
+ {
+     public async Task<IActionResult> Index()
+     {
+         var expenses = await expensesService.GetAllAsync();
+         return View(expenses);
+     }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create(Expense expense)
-        {
-            if(ModelState.IsValid)
-            {
-                await _expensesService.Add(expense);
-                return RedirectToAction("Index");
-            }
-            return View(expense);
-        }
+     public IActionResult Create() => View();
 
-        public IActionResult GetChart()
-        {
-            var data = _expensesService.GetChartData();
-            return Json(data);
-        }
-    }
-}
+     [HttpPost]
+     public async Task<IActionResult> Create(ExpenseInputModel input)
+     {
+         if (!ModelState.IsValid)
+             return View(input);
+
+         await expensesService.AddAsync(input);
+         return RedirectToAction(nameof(Index));
+     }
+
+     public async Task<IActionResult> GetChart()
+     {
+         var data = await expensesService.GetChartDataAsync();
+         return Json(data);
+     }
+ }

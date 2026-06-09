@@ -1,33 +1,45 @@
 ﻿using FinanceApp.Models;
+using FinanceApp.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinanceApp.Data.Service
+namespace FinanceApp.Data.Service;
+
+public class ExpensesService(FinanceAppContext context) : IExpensesService
 {
-    public class ExpensesService : IExpensesService
+    public async Task<IEnumerable<ExpenseViewModel>> GetAllAsync() =>
+        await context.Expenses
+            .OrderByDescending(e => e.Date)
+            .Select(e => new ExpenseViewModel
+            {
+                Id          = e.Id,
+                Description = e.Description,
+                Amount      = e.Amount,
+                Category    = e.Category,
+                Date        = e.Date
+            })
+            .ToListAsync();
+
+    public async Task AddAsync(ExpenseInputModel input)
     {
-        private readonly FinanceAppContext _context;
+        var expense = new Expense
+        {
+            Description = input.Description,
+            Amount      = input.Amount,
+            Category    = input.Category,
+            Date        = DateTime.UtcNow
+        };
 
-        public ExpensesService(FinanceAppContext context)
-        {
-            _context = context;
-        }
-        public async Task<IEnumerable<Expense>> GetAll()
-        {
-            var expenses = await _context.Expenses.ToListAsync();
-            return expenses;
-        }
-
-        public async Task Add(Expense expense)
-        {
-            _context.Expenses.Add(expense);
-            await _context.SaveChangesAsync();
-        }
-
-        public IQueryable GetChartData()
-        {
-            var data = _context.Expenses.GroupBy(e => e.Category)
-                .Select(g => new { Category = g.Key, Total = g.Sum(e => e.Amount) });
-            return data;
-        }
+        context.Expenses.Add(expense);
+        await context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<ChartDataDto>> GetChartDataAsync() =>
+        await context.Expenses
+            .GroupBy(e => e.Category)
+            .Select(g => new ChartDataDto
+            {
+                Category = g.Key,
+                Total    = g.Sum(e => e.Amount)
+            })
+            .ToListAsync();
 }

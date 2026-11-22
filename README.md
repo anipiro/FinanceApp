@@ -9,7 +9,7 @@ A small ASP.NET Core MVC app for recording personal expenses and seeing how they
 - **Input checks.** All three fields are required and the amount must be greater than zero. If the input is invalid the form is shown again and nothing is saved.
 - **Category chart.** Below the table, a Chart.js pie chart shows the total spent per category. The page fetches the totals as JSON from `/Expenses/GetChart`.
 
-There is no editing or deleting of expenses, and no user accounts. The home page is still the default template page and the navigation bar has no link to the expenses, so open `/Expenses` directly.
+The expense pages are at `/Expenses`.
 
 ## How it is built
 
